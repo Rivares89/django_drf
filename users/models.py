@@ -16,3 +16,32 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        ordering = ('id',)
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name='пользователь', **NULLABLE)
+    payment_date = models.DateField(verbose_name='дата оплаты', **NULLABLE)
+    course = models.ForeignKey('materials.Course',
+                               on_delete=models.CASCADE, verbose_name='оплаченный курс', **NULLABLE)
+    lesson = models.ForeignKey('materials.Lesson',
+                               on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
+    sum = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='сумма оплаты')
+    payment_method = models.CharField(max_length=50,
+                                      choices=(('CARD', 'картой'), ('CASH', 'наличными')),
+                                      verbose_name='способ оплаты', **NULLABLE)
+
+    def __str__(self):
+        return f'{self.user} - {self.course if self.course else self.lesson} - {self.sum}'
+
+    class Meta:
+        verbose_name = 'оплата'
+        verbose_name_plural = 'оплаты'
+        ordering = ('user', 'payment_date')
