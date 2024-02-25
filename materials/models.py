@@ -29,3 +29,20 @@ class Lesson(models.Model):
         verbose_name_plural = 'уроки'
 
 
+class Quantity(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+
+    quantity = models.IntegerField(verbose_name='количество')
+
+
+    def __str__(self):
+        return f'{self.course} - {self.quantity}'
+
+    class Meta:
+        verbose_name = 'количество'
+        verbose_name_plural = 'количество'
+        ordering = ('-quantity',)
+
+
+
+
