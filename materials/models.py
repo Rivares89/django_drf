@@ -2,10 +2,11 @@ from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
 
+
 class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название')
     preview = models.ImageField(upload_to='courses/', verbose_name='изображение', **NULLABLE)
-    descrition = models.TextField(verbose_name='описание')
+    description = models.TextField(verbose_name='описание')
 
     def __str__(self):
         return f'{self.title}'
@@ -31,9 +32,7 @@ class Lesson(models.Model):
 
 class Quantity(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-
     quantity = models.IntegerField(verbose_name='количество')
-
 
     def __str__(self):
         return f'{self.course} - {self.quantity}'
@@ -42,7 +41,3 @@ class Quantity(models.Model):
         verbose_name = 'количество'
         verbose_name_plural = 'количество'
         ordering = ('-quantity',)
-
-
-
-

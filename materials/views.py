@@ -1,10 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework import viewsets, generics
-
 from materials.models import Course, Lesson, Quantity
 from materials.serializers import CourseSerializer, LessonSerializer, QuantitySerializer, CourseQuantitySerializer
-
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
@@ -35,11 +33,9 @@ class QuantityListAPIView(generics.ListAPIView):
     serializer_class = QuantitySerializer
     queryset = Quantity.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('course')
-    ordering_fields = ('payment_date')
-
+    filterset_fields = ('course',)
+    ordering_fields = ('payment_date',)
 
 class CourseQuantityListAPIView(generics.ListAPIView):
     queryset = Quantity.objects.filter(course__isnull=False)
     serializer_class = CourseQuantitySerializer
-
