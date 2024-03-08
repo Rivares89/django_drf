@@ -12,19 +12,26 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'update', 'partial_update']:
-            permission_classes = [IsManager]
-        elif self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
-            permission_classes = [IsOwner]
-        else:
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
+        if self.action == 'create':
+            self.permission_classes = [IsAuthenticated, IsManager]
+        elif self.action == 'list':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
+        elif self.action == 'retrieve':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
+        elif self.action == 'update':
+            self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
+        elif self.action == 'destroy':
+            self.permission_classes = [IsAuthenticated, IsOwner]
+        return [permission() for permission in self.permission_classes]
 
-
+    def perform_create(self, serializer):
+        new_course = serializer.save()
+        new_course.owner = self.request.user
+        new_course.save()
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsManager]
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
@@ -34,25 +41,25 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsManager, IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsManager, IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsAuthenticated, IsManager, IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = [IsOwnerOrStaff, IsManager, IsOwner]
+    permission_classes = [IsOwnerOrStaff, IsOwner]
 
 class QuantityCreateAPIView(generics.CreateAPIView):
     serializer_class = QuantitySerializer
-    permission_classes = [IsAuthenticated, IsManager]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class QuantityListAPIView(generics.ListAPIView):
     serializer_class = QuantitySerializer
@@ -60,9 +67,9 @@ class QuantityListAPIView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('course',)
     ordering_fields = ('payment_date',)
-    permission_classes = [IsAuthenticated, IsManager]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class CourseQuantityListAPIView(generics.ListAPIView):
     queryset = Quantity.objects.filter(course__isnull=False)
     serializer_class = CourseQuantitySerializer
-    permission_classes = [IsAuthenticated, IsManager]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
