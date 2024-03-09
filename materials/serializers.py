@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from materials.models import Course, Lesson, Quantity
+from materials.models import Course, Lesson, Quantity, Subscription
+from materials.validators import TitleValidator
+
 
 class QuantitySerializer(serializers.ModelSerializer):
 
@@ -25,6 +27,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+        validators = [TitleValidator(field='video_link')]
 
 class CourseQuantitySerializer(serializers.ModelSerializer):
     course = CourseSerializer()
@@ -32,3 +35,8 @@ class CourseQuantitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Quantity
         fields = ('quantity', 'course')
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
