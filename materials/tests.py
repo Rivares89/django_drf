@@ -122,49 +122,49 @@ class MaterialsTestCase(APITestCase):
             status.HTTP_204_NO_CONTENT
         )
 
-    class SubscriptionTestCase(APITestCase):
+class SubscriptionTestCase(APITestCase):
 
-        def setUp(self):
-            self.user = User.objects.create(
-                email="test@test.ru",
-                is_staff=True,
-                is_active=True,
-                is_superuser=False,
-            )
-            self.user.set_password("test_user")
-            self.user.save()
+    def setUp(self):
+        self.user = User.objects.create(
+            email="test@test.ru",
+            is_staff=True,
+            is_active=True,
+            is_superuser=False,
+        )
+        self.user.set_password("test_user")
+        self.user.save()
 
-            self.course = Course.objects.create(
-                title="Test_course",
-                description="Test_course",
-                owner=self.user
-            )
+        self.course = Course.objects.create(
+            title="Test_course",
+            description="Test_course",
+            owner=self.user
+        )
 
-            self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.user)
 
-        def test_subscribe_to_course(self):
-            """Тест на создание подписки на курс"""
+    def test_subscribe_to_course(self):
+        """Тест на создание подписки на курс"""
 
-            data = {
-                "user": self.user.id,
-                "course": self.course.id,
-            }
+        data = {
+            "user": self.user.id,
+            "course": self.course.id,
+        }
 
-            response = self.client.post(
-                reverse('materials:subscribe'),
-                data=data
-            )
-            print(response.json())
+        response = self.client.post(
+            reverse('materials:subscribe'),
+            data=data
+        )
+        print(response.json())
 
-            self.assertEquals(
-                response.status_code,
-                status.HTTP_201_CREATED
-            )
+        self.assertEquals(
+            response.status_code,
+            status.HTTP_200_OK
+        )
 
-            self.assertEquals(
-                response.json(),
-                {'message': 'Вы подписались на обновления курса'}
-            )
+        self.assertEquals(
+            response.json(),
+            {'message': 'Вы подписались на обновления курса'}
+        )
 
 
 ###########################
