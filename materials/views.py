@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
@@ -17,9 +17,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            self.permission_classes = [IsAuthenticated]
+            self.permission_classes = [IsAuthenticated, ~IsManager]
         elif self.action == 'list':
             self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
+
         elif self.action == 'retrieve':
             self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
         elif self.action == 'update':
@@ -35,7 +36,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsManager]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()

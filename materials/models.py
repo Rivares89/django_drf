@@ -1,4 +1,4 @@
-from django.conf import settings
+from config import settings
 from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
@@ -19,7 +19,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, **NULLABLE)
     title = models.CharField(max_length=150, verbose_name='название')
     description = models.TextField(verbose_name='описание')
     preview = models.ImageField(upload_to='lessons/', verbose_name='изображение', **NULLABLE)
