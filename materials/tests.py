@@ -167,7 +167,7 @@ class SubscriptionTestCase(APITestCase):
         )
 
 
-###########################
+############
     # def test_create_course(self):
     #         """Тестирование создания курса"""
     #         data = {
