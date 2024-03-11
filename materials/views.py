@@ -17,10 +17,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            self.permission_classes = [AllowAny] # [IsAuthenticated, ~IsManager]
+            self.permission_classes = [IsAuthenticated, ~IsManager]
         elif self.action == 'list':
-            self.permission_classes = [AllowAny] # [IsAuthenticated, IsOwner | IsManager]
-
+            self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
         elif self.action == 'retrieve':
             self.permission_classes = [IsAuthenticated, IsOwner | IsManager]
         elif self.action == 'update':
@@ -36,7 +35,6 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated, ~IsManager]
 
     def perform_create(self, serializer):
@@ -47,26 +45,22 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
     pagination_class = LessonPaginator
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated, IsManager | IsOwner]
+    permission_classes = [IsAuthenticated, IsManager | IsOwner]
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = [AllowAny]
-    # permission_classes = [IsOwnerOrStaff, IsOwner]
+    permission_classes = [IsOwnerOrStaff, IsOwner]
 
 class QuantityCreateAPIView(generics.CreateAPIView):
     serializer_class = QuantitySerializer
